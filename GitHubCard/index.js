@@ -1,8 +1,18 @@
-/*
-  STEP 1: using axios, send a GET request to the following URL
-    (replacing the placeholder with your Github name):
-    https://api.github.com/users/<your name>
-*/
+import axios from 'axios'
+
+const cards = document.querySelector('.cards')
+const followersArray = ["pvahanian  ","tetondan","dustinmyers","chasingeuphoria","justsml","luishrd","bigknell"];
+
+followersArray.forEach(element => {
+  axios.get(`https://api.github.com/users/${element}`)
+  .then(stuff=>{
+    cards.appendChild(gitCardMaker(stuff.data));
+    })
+.catch(err=> {
+  })
+})
+
+
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,33 +38,63 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
-
-    <div class="card">
-      <img src={image url of user} />
-      <div class="card-info">
-        <h3 class="name">{users name}</h3>
-        <p class="username">{users user name}</p>
-        <p>Location: {users location}</p>
-        <p>Profile:
-          <a href={address to users github page}>{address to users github page}</a>
-        </p>
-        <p>Followers: {users followers count}</p>
-        <p>Following: {users following count}</p>
-        <p>Bio: {users bio}</p>
-      </div>
-    </div>
 */
+function gitCardMaker(data) {
+  // Setting up elements, giving classes and adding values if needed
+  let {login,name,location,html_url,following,followers,bio,avatar_url} = data
+ 
+  const card = document.createElement('div')
+  card.classList.add('card')
+  
+  const image = document.createElement('img')
+  image.src = avatar_url
 
-/*
-  List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
-*/
+  const cardInfo = document.createElement('div')
+  cardInfo.classList.add('card-info')
+
+  const names = document.createElement('h3')
+  names.classList.add('name')
+  names.textContent = `Name: ${name}`
+  
+  const logins = document.createElement('p')
+  logins.classList.add('username')
+  logins.textContent = `Username: ${login}`
+
+  const locationv = document.createElement('p')
+  locationv.textContent = `Location: ${location}`
+
+  const profile = document.createElement('p')
+  profile.textContent = `Profile:`
+  const gitAddress = document.createElement('a');
+  let linkText = document.createTextNode(" Follow Me");
+  gitAddress.appendChild(linkText);
+  gitAddress.href= `${html_url}`
+  profile.appendChild(gitAddress)
+
+  const followerS = document.createElement('p')
+  followerS.textContent = `Users Followers Count ${followers}`
+
+  const followeRing = document.createElement('p')
+  followeRing.textContent = `Users Following Count ${following}`
+
+  const bios = document.createElement('p')
+  bios.textContent = `Bio ${bio}`
+
+  // Orders the Cards
+  card.appendChild(image)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(names)
+  cardInfo.appendChild(logins)
+  cardInfo.appendChild(locationv)
+  cardInfo.appendChild(profile)
+  cardInfo.appendChild(followerS)
+  cardInfo.appendChild(followeRing)
+  cardInfo.appendChild(bios)
+
+  return card;
+}
